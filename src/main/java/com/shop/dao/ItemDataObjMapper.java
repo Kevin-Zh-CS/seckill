@@ -56,5 +56,6 @@ public interface ItemDataObjMapper {
      */
     int updateByPrimaryKey(ItemDataObj record);
 
+    // This method is applied in stock service
     int increaseSales(@Param("id") Integer id, @Param("amount") Integer amount);
 }
