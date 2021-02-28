@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title id="title_name"></title>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{~/mall/css/bootstrap.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{~/mall/styles/item.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{~/mall/styles/magicheader-0.1.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{mall/styles/header.css}">
+    <script th:src="@{~/mall/js/jquery-1.11.0.min.js}"></script>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+
+<body>
+<header th:replace="mall/magicheader::header-fragment"></header>
+<div class="container">
+    <div class="card">
+        <div class="container-fliud">
+            <div class="wrapper row">
+                <div class="preview col-md-6">
+                    <div class="preview-pic tab-content">
+                        <div class="tab-pane active" id="pic-1">
+                            <img id="imgUrl" style="width:600px; heigth:auto"/>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="details col-md-6">
+                    <h3 class="product-title" id="title"></h3>
+                    <div class="rating">
+                        <div class="stars">
+                            <span class="fa fa-star checked"></span>
+                            <span class="fa fa-star checked"></span>
+                            <span class="fa fa-star checked"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                        </div>
+                    </div>
+                    <div id="promoStartDateContainer">
+                        <label style="color:blue" id="promoStatus" class="control-label"></label>
+                        <div>
+                            <label style="color:red" class="control-label" id="promoStartDate"/>
+                        </div>
+                    </div>
+                    <h4 class="price">售价: <span id="price"></span></h4>
+                    <h4 class="price">销量: <span id="sales"></span></h4>
+                    <h4 class="price">库存: <span id="stock"></span></h4>
+                    <p class="vote"><strong>简介：</strong><span id="description"></span></p>
+
+<!--                    <p class="vote"><strong>91%</strong> of buyers enjoyed this product! <strong>(87 votes)</strong></p>-->
+
+
+                    <div style="float: bottom; margin-bottom: 10px; margin-top: 30px">
+                        <div class="action">
+                            <button type="button" class="btn btn-success" id="createorder">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                     class="bi bi-credit-card" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd"
+                                          d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v1h14V4a1 1 0 0 0-1-1H2zm13 4H1v5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V7z"/>
+                                    <path d="M2 10a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-1z"/>
+                                </svg>
+                                购买
+                            </button>
+                            <!--                        <button class="add-to-cart btn btn-default" type="button" id="createorder">add to cart</button>-->
+
+                            <button type="button" class="btn btn-warning">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                     class="bi bi-cart-dash" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd"
+                                          d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm7 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/>
+                                    <path fill-rule="evenodd"
+                                          d="M6 7.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5z"/>
+                                </svg>
+                                加入购物车
+                            </button>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+
+<script th:src="@{/mall/js/verify.js}"></script>
+
+<script>
+    let good_id = [[${goodID}]];
+    let g_itemView = {};
+    jQuery(document).ready(function () {
+        $("#createorder").click(function () {
+            var token = window.localStorage["token"];
+            if (token == null) {
+                alert("用户未登录，不能下单");
+                window.location.href = "login2.html";
+                return false;
+            }
+
+            $.ajax({
+                type: "POST",
+                connectType: "application/x-www-form-urlencoded",
+                url: "http://localhost:8080/order/createorder?token=" + token,
+                data: {
+                    "itemId": g_itemView.id,
+                    "amount": 1,//待修改
+                    "promoId": g_itemView.promoId
+                },
+                xhrFields: {withCredentials: true},
+                success: function (data) {
+                    if (data.status === "success") {
+                        alert("下单成功");
+                        //刷新看到销量变化
+                        window.location.reload();
+                    } else {
+                        alert("下单失败，原因为" + data.data.errMessage);
+                        if (data.data.errCode === 20003) {
+                            window.location.href = "/user/login2";
+                            return false;
+                        }
+                    }
+                },
+                error: function (data) {
+                    alert("下单，原因为" + data.responseText);
+                }
+            });
+        });
+
+
+        //获取商品详情
+        $.ajax({
+            type: "POST",
+            url: "http://localhost:8080/item/get",
+            data: {
+                "id": good_id,
+            },
+            xhrFields: {withCredentials: true},
+            success: function (data) {
+                if (data.status === "success") {
+                    g_itemView = data.data;
+                    reloadDom();
+                } else {
+                    alert("获取信息失败，原因为" + data.data.errMessage);
+                }
+
+            },
+            error: function (data) {
+                alert("获取信息失败，原因为" + data.responseText);
+            }
+        });
+        return false;
+    });
+
+    function reloadDom() {
+        $("#title").text(g_itemView.title);
+        $("#description").text(g_itemView.description);
+        $("#stock").text(g_itemView.stock);
+        $("#price").text(g_itemView.price);
+        $("#imgUrl").attr("src", g_itemView.imgUrl);
+        $("#sales").text(g_itemView.sales);
+        $("#title_name").text(g_itemView.title);
+        if (g_itemView.promoStatus === 1) {
+            //未开始
+            var startTime = g_itemView.startDate;
+            startTime = (new Date(startTime)).getTime();
+            var nowTime = Date.parse(new Date());
+            var delta = (startTime - nowTime) / 1000;
+            if (delta <= 0) {
+                //活动开始了，反转状态
+                g_itemView.promoStatus = 2;
+                reloadDom();
+            }
+            $("#promoStartDate").text("秒杀活动将于" + g_itemView.startDate + "开始  倒计时：" + delta + "秒");
+            $("#promoPrice").text(g_itemView.promoPrice);
+            // $("#createorder").attr("disabled", true);
+        } else if (g_itemView.promoStatus === 2) {
+            $("#promoStartDate").text("秒杀活动进行中");
+            $("#promoPrice").text(g_itemView.promoPrice);
+            $("#createorder").attr("disabled", false);
+            $("#normalPriceContainer").hide();
+        }
+    }
+</script>
+</html>

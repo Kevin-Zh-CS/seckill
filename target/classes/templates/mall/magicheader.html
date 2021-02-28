@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" th:href="@{mall/styles/magicheader-0.1.css}">
+    <script th:src="@{mall/js/jquery-1.11.0.min.js}"></script>
+</head>
+
+<body>
+<header id="magicheader" th:fragment="header-fragment">
+    <div class="magic-header">
+        <div class="magic-header-drawer">
+            <div class="toolbar">
+                <a th:href="@{/index}">
+                    <div class="logo header_menu" style="color: #b4f0d7">
+                        Market Demo
+                    </div>
+                </a>
+                <nav class="left-tools-group header_menu">
+                    <a th:href="@{/order/orders}">订单</a>
+                    <a id="my_cart">购物车</a>
+                    <a th:href="@{/admin}">管理系统</a>
+                    <a th:href="@{/index}">主页</a>
+                </nav>
+                <div class="right-tools-group header_menu">
+                    <div class="drawer-handle" name="login_div" id="login">
+                        <!--                        这里要加一个 / , 否则会造成跳转异常-->
+                        <a th:href="@{/user/login2}"><strong style="font-size: large; color: #b4f0d7;"
+                                                             id="logintext"></strong></a>
+                    </div>
+
+                    <div class="drawer-handle" name="login_div">
+                        <strong id="userinfo"></strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</header>
+
+<!-----------magic header end--------------->
+
+<!--<script>-->
+<!--    let g_userView = {};-->
+<!--    jQuery(document).ready(function () {-->
+<!--        const token = window.localStorage["token"];-->
+<!--        if (token == null) {-->
+<!--            $("#userinfo").hide();-->
+<!--        }-->
+<!--        $.ajax({-->
+<!--            type: "POST",-->
+<!--            connectType: "application/x-www-form-urlencoded",-->
+<!--            url: "http://localhost:8080/user/verifyLogin",-->
+<!--            data: {-->
+<!--                "token": token-->
+<!--            },-->
+<!--            xhrFields: {withCredentials: true},-->
+<!--            success: function (data) {-->
+<!--                if (data.status === "success") {-->
+<!--                    g_userView = data.data;-->
+<!--                    if (g_userView != null) {-->
+<!--                        $("#signup").hide();-->
+<!--                        $("#login").hide();-->
+<!--                        $("#userinfo").text(g_userView.name);-->
+<!--                    }-->
+<!--                } else {-->
+<!--                    alert("获取信息失败，" + data.data.errMessage);-->
+<!--                }-->
+<!--            },-->
+<!--            error: function (data) {-->
+<!--                alert("错误，" + data.responseText);-->
+<!--            }-->
+<!--        });-->
+<!--        // $("#header_login").on("click", function () {-->
+<!--        //     window.location.href = "login2.html";-->
+<!--        // })-->
+<!--    });-->
+<!--</script>-->
+
+</body>
+

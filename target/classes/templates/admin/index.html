@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<header th:replace="admin/header::header-fragment"></header>
+<title>后台管理系统</title>
+<body class="hold-transition sidebar-mini">
+<div class="wrapper">
+    <!-- 引入页面头header-fragment -->
+    <div th:replace="admin/header::header-nav"></div>
+    <!-- 引入工具栏sidebar-fragment -->
+    <!--/*@thymesVar id="path" type=""*/-->
+    <div th:replace="admin/sidebar::sidebar-fragment(${path})"></div>
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+            <div class="container-fluid">
+            </div><!-- /.container-fluid -->
+        </div>
+        <!-- Main content -->
+        <div class="content">
+            <div class="card card-primary card-outline">
+                <div class="card-header">
+                    <h3 class="card-title">首页</h3>
+                </div> <!-- /.card-body -->
+                <div class="card-body">
+
+                    <h5>这是本人《电子商务系统结构》（郑小林教授）的课程大作业</h5>
+                    <br>
+                    <p>
+<!--                        当前页面是后台管理系统主页，后台管理系统包括:<br>-->
+<!--                        &emsp;&emsp;&#45;&#45;商品管理<br>-->
+<!--                        &emsp;&emsp;&#45;&#45;用户管理<br>-->
+<!--                        &emsp;&emsp;&#45;&#45;订单管理<br>-->
+<!--                        &emsp;&emsp;&#45;&#45;系统管理<br>-->
+<!--                        <br>-->
+                        课程结束后我会将本项目开源<br>
+                        <strong>如对源码感兴趣/想与我交流问题的同学可以加我微信：</strong><br>
+                    </p>
+                    <img src="mall/img/mywechat.png" alt="" width="300px">
+                </div>
+            </div><!-- /.container-fluid -->
+        </div>
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+
+</div>
+<!-- jQuery -->
+<script th:src="@{/admin/plugins/jquery/jquery.min.js}"></script>
+<!-- jQuery UI 1.11.4 -->
+<script th:src="@{/admin/plugins/jQueryUI/jquery-ui.min.js}"></script>
+<!-- Bootstrap 4 -->
+<script th:src="@{/admin/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<!-- AdminLTE App -->
+<script th:src="@{/admin/dist/js/adminlte.min.js}"></script>
+</body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<header th:replace="admin/header::header-fragment">
+</header>
+<head>
+    <title>用户管理</title>
+    <!-- jQuery -->
+    <script th:src="@{/admin/plugins/jquery/jquery.min.js}"></script>
+    <!-- jQuery UI 1.11.4 -->
+    <script th:src="@{/admin/plugins/jQueryUI/jquery-ui.min.js}"></script>
+    <!-- Bootstrap 4 -->
+    <script th:src="@{/admin/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+    <!-- AdminLTE App -->
+    <script th:src="@{/admin/dist/js/adminlte.min.js}"></script>
+    <!-- jqgrid -->
+    <script th:src="@{/admin/plugins/jqgrid-5.3.0/jquery.jqGrid.min.js}"></script>
+    <script th:src="@{/admin/plugins/jqgrid-5.3.0/grid.locale-cn.js}"></script>
+    <script th:src="@{/admin/plugins/jqgrid-5.3.0/grid.locale-cn.js}"></script>
+    <!-- sweetalert -->
+    <script th:src="@{/admin/plugins/sweetalert/sweetalert.min.js}"></script>
+    <script th:src="@{/admin/dist/js/public.js}"></script>
+</head>
+<style>
+    .ui-jqgrid tr.jqgrow td {
+        white-space: normal !important;
+        height: auto;
+        vertical-align: text-top;
+        padding-top: 2px;
+    }
+
+    a {
+        color: #1baeae;
+        text-decoration: none;
+        background-color: transparent;
+        -webkit-text-decoration-skip: objects;
+    }
+
+    a:hover {
+        color: white;
+        background-color: #1baeae;
+    }
+</style>
+<body class="hold-transition sidebar-mini">
+<div class="wrapper">
+    <!-- 引入页面头header-fragment -->
+    <div th:replace="admin/header::header-nav"></div>
+    <!-- 引入工具栏sidebar-fragment -->
+    <!--/*@thymesVar id="path" type="java.lang.String"*/-->
+    <div th:replace="admin/sidebar::sidebar-fragment(${path})"></div>
+    <!-- Content Wrapper. Contains 图标content -->
+    <div class="content-wrapper">
+        <!-- Content Header (图标header) -->
+        <div class="content-header">
+            <div class="container-fluid">
+            </div><!-- /.container-fluid -->
+        </div>
+        <!-- Main content -->
+        <div class="content">
+            <div class="container-fluid">
+                <div class="card card-primary card-outline">
+                    <div class="card-header">
+                        <h3 class="card-title">用户管理</h3>
+                    </div> <!-- /.card-body -->
+                    <div class="card-body">
+
+                        <div>
+                            <table class="table table-hover">
+                                <th></th>
+                                <th>用户id</th>
+                                <th>用户名</th>
+                                <th>性别</th>
+                                <th>年龄</th>
+                                <th>电话</th>
+                                <th>注册方式</th>
+                                <th>用户处理</th>
+                                <tbody id="container"></tbody>
+                            </table>
+                        </div>
+                    </div><!-- /.card-body -->
+                </div>
+            </div><!-- /.container-fluid -->
+        </div>
+    </div>
+</div>
+
+<script>
+    let g_userList = [];
+    jQuery(document).ready(function () {
+        $.ajax({
+            type: "GET",
+            url: "http://localhost:8080/admin/users/list",
+            xhrFields: {withCredential: true},
+            success: function (data) {
+                if (data.status === "success") {
+                    g_userList = data.data;
+                    reloadDom();
+                } else {
+                    alert("获取用户信息失败，原因是" + data.data.errMessage);
+                }
+            },
+            error: function (data) {
+                alert("获取用户信息失败，原因是" + data.responseText);
+            }
+        });
+        return false;
+    });
+
+    function reloadDom() {
+        for (let i = 0; i < g_userList.length; i++) {
+            const user = g_userList[i];
+            let gender = user.gender === 1?"男":"女";
+            const dom = "<tr>" +
+                "<td>" + "<input type='checkbox'>" + "</td>" +
+                "<td>" + user.id + "</td>" +
+                "<td>" + user.name + "</td>" +
+                "<td>" + gender + "</td>" +
+                "<td>" + user.age + "</td>" +
+                "<td>" + user.telphone + "</td>" +
+                "<td>" + user.registerMode + "</td>" +
+                "<td>" +
+                "<div class=\"grid-btn\">\n" +
+                "<button class=\"btn btn-success\">解禁</button>\n" +
+                "<button class=\"btn btn-danger\">禁用</button>\n" +
+                "</div>" +
+                "</td>" +
+                "</tr>";
+            $("#container").append($(dom));
+
+        }
+    }
+</script>
+</body>
+</html>

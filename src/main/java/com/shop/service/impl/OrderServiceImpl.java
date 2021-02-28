@@ -1,5 +1,7 @@
 package com.shop.service.impl;
 
+import com.shop.controller.viewobject.OrderView;
+import com.shop.dao.ItemDataObjMapper;
 import com.shop.dao.OrderDataObjMapper;
 import com.shop.dao.SequenceDataObjMapper;
 import com.shop.dao.dataobject.OrderDataObj;
@@ -12,6 +14,8 @@ import com.shop.service.UserService;
 import com.shop.service.model.ItemModel;
 import com.shop.service.model.OrderModel;
 import com.shop.service.model.UserModel;
+import com.shop.util.PageQueryUtil;
+import com.shop.util.PageResult;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +25,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -36,6 +42,10 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private SequenceDataObjMapper sequenceDataObjMapper;
+
+    @Autowired
+    private ItemDataObjMapper itemDataObjMapper;
+
 
     @Override
     @Transactional
@@ -85,13 +95,38 @@ public class OrderServiceImpl implements OrderService {
         return orderModel;
     }
 
+    @Override
+    public PageResult getOrders(PageQueryUtil pageUtil) {
+        int total = orderDataObjMapper.getTotalOrders(pageUtil);
+        List<OrderDataObj> orderDataObjList = orderDataObjMapper.getTotalOrderList(pageUtil);
+        List<OrderView> orderViewList = new ArrayList<>();
+        for (OrderDataObj orderDataObj : orderDataObjList) {
+            String imgUrl = itemDataObjMapper.selectByPrimaryKey(orderDataObj.getItemId()).getImgUrl();
+            OrderView orderView = new OrderView();
+            orderView.setImgUrl(imgUrl);
+            BeanUtils.copyProperties(orderDataObj, orderView);
+            orderViewList.add(orderView);
+        }
+        return new PageResult(orderViewList, total, pageUtil.getLimit(), pageUtil.getPage());
+    }
+
+    @Override
+    public List<OrderDataObj> getAllOrders() {
+        return orderDataObjMapper.getAllOrders();
+    }
+
+    @Override
+    public void deleteOrder(String orderId) {
+        orderDataObjMapper.deleteByPrimaryKey(orderId);
+    }
+
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     String generateOrderNumber() {
         StringBuilder stringBuilder = new StringBuilder();
         LocalDateTime now = LocalDateTime.now();
         String nowData = now.format(DateTimeFormatter.ISO_DATE).replace("-", "");
         stringBuilder.append(nowData);
-        int sequence = 0;
+        int sequence;
         SequenceDataObj sequenceDataObj = sequenceDataObjMapper.getSequenceByName("order_info");
         sequence = sequenceDataObj.getCurrentValue();
         sequenceDataObj.setCurrentValue(sequenceDataObj.getCurrentValue() + sequenceDataObj.getStep());

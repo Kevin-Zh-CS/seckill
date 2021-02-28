@@ -31,11 +31,7 @@ public class App
         }
     }
 
-
-    public static void main( String[] args )
-    {
-
-        System.out.println( "SpringBoot Running...");
+    public static void main( String[] args ) {
         SpringApplication.run(App.class, args);
     }
 }

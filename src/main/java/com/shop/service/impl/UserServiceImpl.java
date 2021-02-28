@@ -17,6 +17,8 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -87,6 +89,11 @@ public class UserServiceImpl implements UserService {
             throw new BusinessException(BusinessError.USER_LOGIN_FAIL);
         }
         return userModel;
+    }
+
+    @Override
+    public List<UserDataObj> getAllUsers() {
+        return userDataObjMapper.getAllUsers();
     }
 
     private UserModel convertFromObjectToModel(UserDataObj userDataObj, UserPasswordDataObj userPasswordDataObj) {

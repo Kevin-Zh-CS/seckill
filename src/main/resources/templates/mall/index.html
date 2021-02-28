@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>商品列表</title>
+    <meta charset='UTF-8'>
+    <meta name="robots" content="noindex">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css'>
+
+    <link rel="stylesheet" th:href="@{mall/styles/itemlist.css}">
+    <link rel="stylesheet" th:href="@{mall/styles/magicheader-0.1.css}">
+    <link rel="stylesheet" th:href="@{mall/styles/header.css}">
+    <script th:src="@{mall/js/jquery-1.11.0.min.js}"></script>
+</head>
+<body>
+<header th:replace="mall/magicheader::header-fragment"></header>
+<div class="container" id="container_id"></div><!--container-->
+
+<!--<div th:replace="mall/footer::footer-fragment"></div>-->
+<div id="delay_footer"></div>
+
+<script th:src="@{mall/js/verify.js}"></script>
+<script th:src="@{mall/js/footer.js}"></script>
+<script>
+    let g_itemList = [];
+    jQuery(document).ready(function () {
+        $.ajax({
+            type: "GET",
+            url: "http://localhost:8080/item/list",
+            xhrFields: {withCredential: true},
+            success: function (data) {
+                if (data.status === "success") {
+                    g_itemList = data.data;
+                    reloadDom();
+                } else {
+                    alert("获取商品信息失败，原因是" + data.data.errMessage);
+                }
+                loadfooter();
+            },
+            error: function (data) {
+                alert("获取商品信息失败，原因是" + data.responseText);
+            }
+        });
+        return false;
+    });
+
+    function reloadDom() {
+        for (let i = 0; i < g_itemList.length; i++) {
+            const itemView = g_itemList[i];
+            const dom = "<div class=\"movie-card\" id='itemDetail"+itemView.id+"'>\n" +
+                "        <div class=\"movie-header\">\n" +
+                "            <img src='" + itemView.imgUrl + "'height=\"367px\" width=\"100%\">\n" +
+                "        </div><!--movie-header-->\n" +
+                "        <div class=\"movie-content\">\n" +
+                "            <div class=\"movie-content-header\">\n" +
+ //               "                <a href=\"item/get/" + itemView.id + "\">\n" +
+                "                    <h3 class=\"movie-title\">" + itemView.title + "</h3>\n" +
+//               "                </a>\n" +
+                "                <div class=\"imax-logo\"></div>\n" +
+                "            </div>\n" +
+                "            <div class=\"movie-info\">\n" +
+                "                <div class=\"info-section\">\n" +
+                "                    价格：" + itemView.price + "元\n" +
+                "                </div><!--date,time-->\n" +
+                "            </div>\n" +
+                "            <div class=\"movie-info\">\n" +
+                "                <div class=\"info-section\">\n" +
+                "                    月销量：" + itemView.sales + "件\n" +
+                "                </div><!--date,time-->\n" +
+                "            </div>\n" +
+                "        </div><!--movie-content-->\n" +
+                "    </div>";
+
+            $("#container_id").append($(dom));
+            $("#itemDetail" + itemView.id).click(function () {
+                window.location.href = "/item/get/" + itemView.id;
+                //window.location.href = "login2.html"
+            });
+        }
+    }
+</script>
+</body>
+</html>

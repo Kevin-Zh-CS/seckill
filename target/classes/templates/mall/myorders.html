@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>我的订单</title>
+    <meta charset='UTF-8'>
+    <link rel="stylesheet" th:href="@{/mall/styles/itemlist.css}">
+    <link rel="stylesheet" th:href="@{/mall/styles/my-orders.css}">
+    <link rel="stylesheet" th:href="@{/mall/styles/magicheader-0.1.css}">
+    <link rel="stylesheet" th:href="@{mall/styles/header.css}">
+    <script th:src="@{/mall/js/jquery-1.11.0.min.js}"></script>
+    <script th:src="@{/mall/js/verify.js}"></script>
+</head>
+<body>
+<header th:replace="mall/magicheader::header-fragment"></header>
+
+<!-- personal -->
+<div id="personal" style="position: center">
+    <div class="self-info center">
+        <!--        <div class="lfnav fl">-->
+        <!--            <div class="nav_title">个人中心</div>-->
+        <!--            <div class="title_list">-->
+        <!--                <ul>-->
+        <!--                    <li><a>个人信息</a></li>-->
+        <!--                    <li><a>我的订单</a></li>-->
+        <!--                    <li><a>退出登录</a></li>-->
+        <!--                </ul>-->
+        <!--            </div>-->
+        <!--        </div>-->
+        <div class="intro fr" style="float: right">
+            <div class="uc-box uc-main-box">
+                <div class="uc-content-box order-list-box">
+                    <div class="box-hd" style="float: left; margin-left: 20px">
+                        <h1 class="title">我的订单
+                            <small>请谨防钓鱼链接或诈骗电话，<a href="##">了解更多&gt;</a>
+                            </small>
+                        </h1>
+                    </div>
+                    <div class="box-bd">
+                        <div id="J_orderList">
+                            <ul class="order-list">
+                                <!--/*@thymesVar id="orderPageResult" type="com.shop.util.PageResult"*/-->
+                                <th:block th:if="${#lists.isEmpty(orderPageResult.list)}">
+                                    <img style="margin-top: 16px;"
+                                         th:src="@{/mall/image/null-content.png}">
+                                    <small><a th:href="@{/index}">&nbsp;&nbsp;&nbsp;&nbsp;去购物&gt;</a>
+                                    </small>
+                                </th:block>
+                                <th:block th:unless="${#lists.isEmpty(orderPageResult.list)}">
+                                    <!--/*@thymesVar id="order" type="com.shop.controller.viewobject.OrderView"*/-->
+                                    <th:block th:each="order : ${orderPageResult.list}">
+                                        <li class="uc-order-item uc-order-item-list">
+                                            <table class="order-detail-table">
+                                                <thead>
+                                                <tr>
+                                                    <th class="col-main">
+                                                        <p class="caption-info"
+                                                           th:text="${'订单号：'+order.id}">02月07日
+                                                        </p>
+                                                    </th>
+                                                    <th class="col-sub"><p class="caption-price">实付金额：
+                                                        <span
+                                                                class="num"
+                                                                th:text="${order.orderPrice}">1299.00
+                                                        </span>元
+                                                    </p></th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr>
+                                                    <td class="order-items">
+                                                        <ul class="goods-list">
+                                                            <!--                                                            <th:block-->
+                                                            <!--                                                                    th:each="item : ${order.newBeeMallOrderItemVOS}">-->
+                                                            <th:block>
+                                                                <li>
+                                                                    <div class="figure figure-thumb">
+                                                                        <a target="_blank">
+                                                                            <!--                                                                           th:href="@{'/goods/detail/'+${item.goodsId}}">-->
+                                                                            <img th:src="@{${order.imgUrl}}"
+                                                                                 width="80" height="80" alt="">
+                                                                        </a>
+                                                                    </div>
+                                                                    <p class="name">
+                                                                        <a target="_blank"
+                                                                           th:text="${order.title}">newbee</a>
+                                                                    </p>
+                                                                    <p class="price"
+                                                                       th:text="${order.orderPrice+'元 x '+order.amount}">
+                                                                        13元 × 1</p>
+                                                                </li>
+                                                                <!--                                                            </th:block>-->
+                                                            </th:block>
+                                                        </ul>
+                                                    </td>
+                                                    <td class="order-actions">
+                                                        <a class="btn btn-small btn-line-gray">订单详情</a>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </li>
+                                    </th:block>
+                                </th:block>
+                            </ul>
+                        </div>
+
+                        <!--/*@thymesVar id="orderPageResult" type="com.shop.util.PageResult"*/-->
+                        <th:block th:unless="${#lists.isEmpty(orderPageResult.list)}">
+                            <div id="J_orderListPages">
+                                <div class="newbee-pagenavi">
+                                    <th:block th:if="${orderPageResult.currPage - 2 >= 1}"><a
+                                            class="numbers"
+                                            th:href="@{'/orders?page=' + ${orderPageResult.currPage - 2}}"
+                                            th:text="${orderPageResult.currPage - 2}">1</a>
+                                    </th:block>
+                                    <th:block th:if="${orderPageResult.currPage - 1 >= 1}"><a
+                                            class="numbers"
+                                            th:href="@{'/orders?page=' + ${orderPageResult.currPage - 1}}"
+                                            th:text="${orderPageResult.currPage - 1}">1</a>
+                                    </th:block>
+                                    <a href="##" class="numbers current" th:text="${orderPageResult.currPage}">1</a>
+                                    <th:block th:if="${orderPageResult.currPage+1<=orderPageResult.totalPage}"><a
+                                            class="numbers"
+                                            th:href="@{'/orders?page=' + ${orderPageResult.currPage + 1}}"
+                                            th:text="${orderPageResult.currPage + 1}">1</a></th:block>
+                                    <th:block th:if="${orderPageResult.currPage + 2<=orderPageResult.totalPage}"><a
+                                            class="numbers"
+                                            th:href="@{'/orders?page=' + ${orderPageResult.currPage + 2}}"
+                                            th:text="${orderPageResult.currPage + 2}">1</a></th:block>
+                                </div>
+                            </div>
+                        </th:block>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -72,5 +72,11 @@
 <!--               enableDeleteByExample="false"-->
 <!--               enableSelectByExample="false"-->
 <!--               selectByExampleQueryId="false"></table>-->
+        <table tableName="cart_item" domainObjectName="CartItemDataObj"
+               enableCountByExample="false"
+               enableUpdateByExample="false"
+               enableDeleteByExample="false"
+               enableSelectByExample="false"
+               selectByExampleQueryId="false"/>
     </context>
 </generatorConfiguration>

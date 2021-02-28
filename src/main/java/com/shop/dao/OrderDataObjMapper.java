@@ -1,6 +1,10 @@
 package com.shop.dao;
 
+import com.alibaba.druid.sql.PagerUtils;
 import com.shop.dao.dataobject.OrderDataObj;
+import com.shop.util.PageQueryUtil;
+
+import java.util.List;
 
 public interface OrderDataObjMapper {
     /**
@@ -50,4 +54,11 @@ public interface OrderDataObjMapper {
      * @mbg.generated Sun Sep 20 21:34:48 CST 2020
      */
     int updateByPrimaryKey(OrderDataObj record);
+
+
+    int getTotalOrders(PageQueryUtil pageUtil);
+
+    List<OrderDataObj> getTotalOrderList(PageQueryUtil pageQueryUtil);
+
+    List<OrderDataObj> getAllOrders();
 }

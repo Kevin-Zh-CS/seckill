@@ -1,11 +1,11 @@
 package com.shop.service.model;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class OrderModel {
+public class OrderModel implements Serializable {
     //订单号
     private String id;
-
     //购买的用户ID
     private Integer userId;
     //购买的商品ID
@@ -18,6 +18,8 @@ public class OrderModel {
     private BigDecimal orderPrice;
     //非空则表示以秒杀商品的方式下单
     private Integer promoId;
+    //商品图片
+    private String imgUrl;
 
     public Integer getPromoId() {
         return promoId;

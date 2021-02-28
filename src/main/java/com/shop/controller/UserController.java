@@ -9,15 +9,19 @@ import com.shop.service.UserService;
 import com.shop.service.model.UserModel;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.Random;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @CrossOrigin(allowCredentials = "true", allowedHeaders = "*")
 @Controller("user")
@@ -28,12 +32,20 @@ public class UserController extends BaseController {
     private UserService userService;
     @Autowired
     private HttpServletRequest httpServletRequest;
+    @Autowired
+    private RedisTemplate  redisTemplate;
+
+
+    @GetMapping({"/login2", "/login2.html"})
+    public String loginPage() {
+        return "mall/login2";
+    }
 
     //用户登录接口
-    @RequestMapping(value = "/login2", method = {RequestMethod.GET}, consumes = {CONTENT_TYPE_FROMED})
+    @PostMapping(value = "/login2", consumes = {CONTENT_TYPE_FROMED})
     @ResponseBody
     public CommonReturnType login(@RequestParam(name = "telphone") String telphone,
-                                  @RequestParam(name = "password") String password) throws BusinessException, UnsupportedEncodingException, NoSuchAlgorithmException {
+                                  @RequestParam(name = "password") String password) throws BusinessException, NoSuchAlgorithmException {
         if (StringUtils.isEmpty(telphone) || StringUtils.isEmpty(password)) {
             throw new BusinessException(BusinessError.PARAMETER_VALIDATION_ERROR);
         }
@@ -41,12 +53,28 @@ public class UserController extends BaseController {
         //用户登录服务，用来校验用户登录是否合法
         UserModel userModel = userService.validateLogin(telphone, this.encodeByMd5(password));
 
-        //将登录凭证加入到用户登录成功的session内
+        //将登录凭证加入到用户登录成功的session内,然后存入redis中
         //之后取出用户信息，从这里取
-        this.httpServletRequest.getSession().setAttribute("IS_LOGIN", true);
-        this.httpServletRequest.getSession().setAttribute("LOGIN_USER", userModel);
+        //生成登录凭证token,UUID,
+        String uuidToken = UUID.randomUUID().toString().replaceAll("-","");
 
-        return CommonReturnType.create(null);
+        //建立token和用户登陆状态之间的联系
+        redisTemplate.opsForValue().set(uuidToken, userModel);
+        redisTemplate.expire(uuidToken, 1, TimeUnit.HOURS);
+//        this.httpServletRequest.getSession().setAttribute("IS_LOGIN", true);
+//        this.httpServletRequest.getSession().setAttribute("LOGIN_USER", userModel);
+        this.httpServletRequest.getSession().setAttribute("UUID", uuidToken);
+        return CommonReturnType.create(uuidToken);
+    }
+
+    @RequestMapping(value = "/verifyLogin", method = {RequestMethod.POST})
+    @ResponseBody
+    public CommonReturnType isLogin(@RequestParam(name = "token") String token){
+        if(StringUtils.isEmpty(token)){
+            return CommonReturnType.create(null);
+        }
+        UserModel userModel = (UserModel) redisTemplate.opsForValue().get(token);
+        return CommonReturnType.create(convertFromModelToView(userModel));
     }
 
 
@@ -83,7 +111,7 @@ public class UserController extends BaseController {
         int randomInt = random.nextInt(99999) + 100000;
         String optCode = String.valueOf(randomInt);
 
-        //TODO:使用redis
+
         //将Otp验证码和对应的手机号相关联，使用HttpSession的方式绑定手机号与OptCode
         httpServletRequest.getSession().setAttribute(telphone, optCode);
         System.out.println("telphone=" + telphone + " & otpCode=" + optCode);
@@ -117,7 +145,7 @@ public class UserController extends BaseController {
         return userView;
     }
 
-    public String encodeByMd5(String str) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+    public String encodeByMd5(String str) throws NoSuchAlgorithmException {
         //确定计算方法
         MessageDigest md5 = MessageDigest.getInstance("MD5");
         Base64.Encoder encoder = Base64.getEncoder();

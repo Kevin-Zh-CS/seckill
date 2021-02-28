@@ -167,4 +167,10 @@
       third_party_id = #{thirdPartyId,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+
+  <select id="getAllUsers" resultMap="BaseResultMap">
+    select * from user_info
+  </select>
+
 </mapper>

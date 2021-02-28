@@ -6,8 +6,8 @@
         <!-- jdbc连接 -->
         <jdbcConnection driverClass="com.mysql.jdbc.Driver"
                         connectionURL="jdbc:mysql://127.0.0.1:3306/miaosha"
-                        userId="****"
-                        password="*******" />
+                        userId="root"
+                        password="sdaqzjw126" />
         <!-- 生成实体类地址 -->
         <javaModelGenerator targetPackage="com.shop.dao.dataobject"
                             targetProject="src/main/java" >
@@ -72,5 +72,11 @@
 <!--               enableDeleteByExample="false"-->
 <!--               enableSelectByExample="false"-->
 <!--               selectByExampleQueryId="false"></table>-->
+        <table tableName="cart_item" domainObjectName="CartItemDataObj"
+               enableCountByExample="false"
+               enableUpdateByExample="false"
+               enableDeleteByExample="false"
+               enableSelectByExample="false"
+               selectByExampleQueryId="false"/>
     </context>
 </generatorConfiguration>
